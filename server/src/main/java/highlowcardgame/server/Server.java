@@ -91,11 +91,20 @@ public class Server {
         count++;
         Socket acceptedSocket = socket.accept();
         PlayerConnection pc = new PlayerConnection(acceptedSocket, game);
-        // cm.addClient(pc);
-        pc.reactToInput();
+        new Thread(pc).start();
       }
     } catch (IOException | NoNextCardException e) {
       System.err.println(e);
+    }
+    finally {
+      if (socket != null) {
+        try {
+          socket.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 }

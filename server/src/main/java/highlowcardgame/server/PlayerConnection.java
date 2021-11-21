@@ -22,7 +22,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 /** A player like class representing the server-sided part to communicate with a client. */
-public class PlayerConnection implements Player {
+public class PlayerConnection implements Player, Runnable {
 
   private final Socket socket;
   private final HighLowCardGame game;
@@ -33,13 +33,15 @@ public class PlayerConnection implements Player {
     this.game = game;
   }
 
-  void reactToInput() throws IOException, NoNextCardException {
+  public void run() {
+    PrintWriter pcOutput = null;
+    BufferedReader pcInput = null;
 
-    boolean isRunning = true;
+    try {
+      pcInput =
+          new BufferedReader(
+              new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
-    try (BufferedReader pcInput =
-        new BufferedReader(
-            new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))) {
       while (true) {
         String pcIn = pcInput.readLine();
         if (pcIn == null) {
@@ -48,8 +50,7 @@ public class PlayerConnection implements Player {
 
         Message decodedString = HandleJson.decode(pcIn);
 
-        PrintWriter pcOutput =
-            new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
+        pcOutput = new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
         // joinGameRequest
         if (decodedString instanceof JoinGameRequest) {
           playerName = (((JoinGameRequest) decodedString).getPlayerName());
@@ -70,6 +71,20 @@ public class PlayerConnection implements Player {
           throw new AssertionError("Unknown message type!");
         }
       }
+    } catch (IOException | NoNextCardException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (pcOutput != null) {
+          pcOutput.close();
+        }
+        if (pcInput != null) {
+          pcInput.close();
+          socket.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -83,7 +98,6 @@ public class PlayerConnection implements Player {
     try {
       PrintWriter pcOutput =
           new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
-      // playerName = getName();
       int currentRound = state.getRound();
       Card currentCard = state.getCurrentCard();
       int currentScore = state.getScores().get(this).get();
@@ -97,7 +111,6 @@ public class PlayerConnection implements Player {
 
   @Override
   public void updateNewPlayer(String playerName, GameState state) {
-    // updateState(state);
     try {
       PrintWriter pcOutput =
           new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
