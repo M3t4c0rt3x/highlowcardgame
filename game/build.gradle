@@ -1,0 +1,68 @@
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'java'
+    id 'application'
+
+    // Quality stuff
+    id 'checkstyle'
+    id "com.github.spotbugs" version "4.7.2"
+    id "com.diffplug.spotless" version "5.14.2"
+}
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+}
+
+dependencies {
+
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+tasks.named('test') {
+    // Use junit platform for unit tests.
+    useJUnitPlatform()
+}
+
+checkstyle {
+  toolVersion '8.45'
+  ignoreFailures = false
+  maxWarnings = 0
+}
+
+spotbugsMain {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+  excludeFilter = file('../config/spotbugs/exclude.xml')
+}
+
+spotbugs {
+  effort = 'max'
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+        lineEndings 'UNIX'
+    }
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
+}
+
+application {
+    mainClass = 'highlowcardgame.Shell'
+}
+
+run {
+    standardInput = System.in
+}

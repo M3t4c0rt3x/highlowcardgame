@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="highlowcardgame.server.ServerRequiredTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2021-11-20T13:01:45" hostname="Air-2020" time="8.256">
+  <properties/>
+  <testcase name="testServer2_receivesGuessRequestL_handlesGuessAndSendsGameUpdate()" classname="highlowcardgame.server.ServerRequiredTest" time="2.196"/>
+  <testcase name="testServer2_receivesGuessRequestE_handlesGuessAndSendsGameUpdate()" classname="highlowcardgame.server.ServerRequiredTest" time="2.019"/>
+  <testcase name="testServer1_receivesJoinRequest_sendsPlayerJoined()" classname="highlowcardgame.server.ServerRequiredTest" time="2.014"/>
+  <testcase name="testServer2_receivesGuessRequestH_handlesGuessAndSendsGameUpdate()" classname="highlowcardgame.server.ServerRequiredTest" time="2.02"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[Welcome to the Game, User_1!
+Welcome to the Game, User_1!
+Welcome to the Game, User_1!
+Welcome to the Game, User_1!
+]]></system-err>
+</testsuite>
