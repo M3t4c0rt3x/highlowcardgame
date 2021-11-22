@@ -68,7 +68,7 @@ public class ServerRequiredTest {
     }
 
     String sent = networkOut.toString();
-    String[] jsonMessages = sent.split("\n");
+    String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"PlayerJoinedNotification\".*")
           && message.matches(".*\"newPlayerName\"\\s*:\\s*\"" + USER1 + "\".*")) {
@@ -99,7 +99,7 @@ public class ServerRequiredTest {
     }
 
     String sent = networkOut.toString();
-    String[] jsonMessages = sent.split("\n");
+    String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"GameStateNotification\".*")
           && message.matches(".*\"playerName\"\\s*:\\s*\"" + USER1 + "\".*")
@@ -137,7 +137,7 @@ public class ServerRequiredTest {
     }
 
     String sent = networkOut.toString();
-    String[] jsonMessages = sent.split("\n");
+    String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"GameStateNotification\".*")
           && message.matches(".*\"playerName\"\\s*:\\s*\"" + USER1 + "\".*")
@@ -175,7 +175,7 @@ public class ServerRequiredTest {
     }
 
     String sent = networkOut.toString();
-    String[] jsonMessages = sent.split("\n");
+    String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"GameStateNotification\".*")
           && message.matches(".*\"playerName\"\\s*:\\s*\"" + USER1 + "\".*")

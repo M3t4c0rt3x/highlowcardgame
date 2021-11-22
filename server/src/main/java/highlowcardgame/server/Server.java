@@ -10,7 +10,7 @@ import java.net.Socket;
 
 /**
  * Main class for the game server. The class starts the server sockets and delegates connection and
- * game handling to {@link ConnectionManager}.
+ * game handling to {@link PlayerConnection}.
  */
 public class Server {
   private static final int DEFAULT_PORT = 4441;
@@ -95,13 +95,11 @@ public class Server {
       }
     } catch (IOException | NoNextCardException e) {
       System.err.println(e);
-    }
-    finally {
+    } finally {
       if (socket != null) {
         try {
           socket.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
           e.printStackTrace();
         }
       }

@@ -131,7 +131,7 @@ public class ClientRequiredTest {
     }
 
     String sent = networkOut.toString();
-    String[] jsonMessages = sent.split("\n");
+    String[] jsonMessages = sent.split(System.lineSeparator());
     String lastMessage = jsonMessages[jsonMessages.length - 1];
     assertThat(lastMessage).matches(".*\"messageType\"\\s*:\\s*\"GuessRequest\".*");
     assertThat(lastMessage).matches(".*\"playerName\"\\s*:\\s*\"" + USERNAME + "\".*");
@@ -162,7 +162,7 @@ public class ClientRequiredTest {
     }
 
     String sent = networkOut.toString();
-    String[] jsonMessages = sent.split("\n");
+    String[] jsonMessages = sent.split(System.lineSeparator());
     String lastMessage = jsonMessages[jsonMessages.length - 1];
     assertThat(lastMessage).matches(".*\"messageType\"\\s*:\\s*\"GuessRequest\".*");
     assertThat(lastMessage).matches(".*\"playerName\"\\s*:\\s*\"" + USERNAME + "\".*");
@@ -193,7 +193,7 @@ public class ClientRequiredTest {
     }
 
     String sent = networkOut.toString();
-    String[] jsonMessages = sent.split("\n");
+    String[] jsonMessages = sent.split(System.lineSeparator());
     String lastMessage = jsonMessages[jsonMessages.length - 1];
     assertThat(lastMessage).matches(".*\"messageType\"\\s*:\\s*\"GuessRequest\".*");
     assertThat(lastMessage).matches(".*\"playerName\"\\s*:\\s*\"" + USERNAME + "\".*");

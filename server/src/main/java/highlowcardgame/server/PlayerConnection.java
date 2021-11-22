@@ -33,10 +33,13 @@ public class PlayerConnection implements Player, Runnable {
     this.game = game;
   }
 
+  /**
+   * Main method of the thread, handling incoming and outgoing "server" messages to its
+   * corresponding client.
+   */
   public void run() {
     PrintWriter pcOutput = null;
     BufferedReader pcInput = null;
-
     try {
       pcInput =
           new BufferedReader(
@@ -55,6 +58,7 @@ public class PlayerConnection implements Player, Runnable {
         if (decodedString instanceof JoinGameRequest) {
           playerName = (((JoinGameRequest) decodedString).getPlayerName());
           System.err.println("Welcome to the Game, " + playerName + "!");
+
           game.addPlayer(this);
 
           // guessRequest
@@ -77,13 +81,17 @@ public class PlayerConnection implements Player, Runnable {
       try {
         if (pcOutput != null) {
           pcOutput.close();
+          game.removePlayer(this);
         }
         if (pcInput != null) {
           pcInput.close();
           socket.close();
+          game.removePlayer(this);
         }
       } catch (IOException e) {
         e.printStackTrace();
+      } finally {
+        game.removePlayer(this);
       }
     }
   }

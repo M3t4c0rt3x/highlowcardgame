@@ -99,7 +99,7 @@ public class ServerAdvancedTest {
     }
 
     String sent = networkOut2.toString();
-    String[] jsonMessages = sent.split("\n");
+    String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"PlayerGuessedNotification\".*")
           && message.matches(".*\"playerGuessed\"\\s*:\\s*\"" + USER2 + "\".*")) {
@@ -131,7 +131,7 @@ public class ServerAdvancedTest {
     }
 
     String sent = networkOut1.toString();
-    String[] jsonMessages = sent.split("\n");
+    String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"PlayerLeftNotification\".*")
           && message.matches(".*\"playerName\"\\s*:\\s*\"" + USER2 + "\".*")) {
@@ -168,7 +168,7 @@ public class ServerAdvancedTest {
     for (int i = 1; i <= networkOutputs.size(); i++) {
       boolean found = false;
       String sent = networkOutputs.get(i - 1).toString();
-      String[] jsonMessages = sent.split("\n");
+      String[] jsonMessages = sent.split(System.lineSeparator());
       for (String message : jsonMessages) {
         if (message.matches(".*\"messageType\"\\s*:\\s*\"PlayerJoinedNotification\".*")
             && message.matches(
