@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="highlowcardgame.server.ServerAdvancedTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2021-11-23T10:11:37" hostname="MacBook-Air-2020.local" time="3.646">
+  <properties/>
+  <testcase name="testServer_clientUnreachable_sendsPlayerLeft()" classname="highlowcardgame.server.ServerAdvancedTest" time="0.625"/>
+  <testcase name="testServer_multipleClientConnections()" classname="highlowcardgame.server.ServerAdvancedTest" time="2.472"/>
+  <testcase name="testServer_receivesGuessRequest_sendsPlayerGuessed()" classname="highlowcardgame.server.ServerAdvancedTest" time="0.544"/>
+  <system-out><![CDATA[Server is Started ....
+Continue
+Server is Started ....
+Server is Started ....
+]]></system-out>
+  <system-err><![CDATA[Welcome to the Game, User_1!
+Welcome to the Game, User_2!
+Welcome to the Game, U1!
+Welcome to the Game, U2!
+Welcome to the Game, U3!
+Welcome to the Game, U4!
+Welcome to the Game, U5!
+Welcome to the Game, U6!
+Welcome to the Game, U7!
+Welcome to the Game, U8!
+Welcome to the Game, U9!
+Welcome to the Game, U10!
+Welcome to the Game, U11!
+Welcome to the Game, U12!
+Welcome to the Game, U13!
+Welcome to the Game, U14!
+Welcome to the Game, U15!
+Welcome to the Game, U16!
+Welcome to the Game, U17!
+Welcome to the Game, U18!
+Welcome to the Game, U19!
+Welcome to the Game, U20!
+Welcome to the Game, User_1!
+Welcome to the Game, User_2!
+]]></system-err>
+</testsuite>

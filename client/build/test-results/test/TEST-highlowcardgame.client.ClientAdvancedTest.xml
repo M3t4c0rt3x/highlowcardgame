@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="highlowcardgame.client.ClientAdvancedTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2021-11-23T09:59:50" hostname="MacBook-Air-2020.local" time="1.833">
+  <properties/>
+  <testcase name="testReceivePlayerGuess_own_prints()" classname="highlowcardgame.client.ClientAdvancedTest" time="0.794"/>
+  <testcase name="testReceivePlayerLeft_prints()" classname="highlowcardgame.client.ClientAdvancedTest" time="0.521"/>
+  <testcase name="testReceivePlayerGuess_otherPlayer_prints()" classname="highlowcardgame.client.ClientAdvancedTest" time="0.514"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
