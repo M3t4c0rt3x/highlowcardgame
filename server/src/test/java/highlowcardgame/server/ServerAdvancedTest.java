@@ -1,102 +1,50 @@
 package highlowcardgame.server;
 
 import static com.google.common.truth.Truth.assertThat;
+import static highlowcardgame.server.TestUtils.getNetworkIn;
+import static highlowcardgame.server.TestUtils.getNetworkOut;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.SequenceInputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
+@Timeout(7)
 public class ServerAdvancedTest {
 
   private static final String USER1 = "User_1";
   private static final String USER2 = "User_2";
-  private ByteArrayOutputStream out;
-
-  @BeforeEach
-  public void setUp() {
-    out = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(out));
-  }
-
-  @AfterEach
-  public void tearDown() throws IOException {
-    out.close();
-  }
-
-  private void feedInput(String input) {
-    System.setIn(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
-  }
-
-  private String getOutput() {
-    return out.toString();
-  }
-
-  private OutputStream getNetworkOut() {
-    return new ByteArrayOutputStream();
-  }
-
-  private InputStream getNetworkIn(String input) {
-    return getNetworkIn(input, false);
-  }
-
-  private InputStream getNetworkIn(String input, boolean keepOpen) {
-    InputStream emptyStream =
-        new InputStream() {
-
-          @Override
-          public int read() {
-            if (keepOpen) {
-              try {
-                Thread.sleep(2000);
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              }
-            }
-            return -1;
-          }
-        };
-    return new SequenceInputStream(
-        new ByteArrayInputStream((input + System.lineSeparator()).getBytes(StandardCharsets.UTF_8)),
-        emptyStream);
-  }
 
   private void assertThatContainsNKeyValuePairs(String message, int numberOfPairsExpected) {
     assertThat(message).matches("[^:]*:[^:]*".repeat(numberOfPairsExpected));
   }
 
   @Test
-  public void testServer_receivesGuessRequest_sendsPlayerGuessed() throws IOException {
-    Server server = new Server();
+  public void testServer_receivesGuessRequest_sendsPlayerGuessed()
+      throws IOException, InterruptedException {
     String joinRequest1 = "{\"messageType\":\"JoinGameRequest\",\"playerName\":\"" + USER1 + "\"}";
     String joinRequest2 = "{\"messageType\":\"JoinGameRequest\",\"playerName\":\"" + USER2 + "\"}";
     String guessRequest2 =
         "{\"messageType\":\"GuessRequest\",\"guess\":\"HIGH\",\"playerName\":\"" + USER2 + "\"}";
-    InputStream networkIn1 = getNetworkIn(joinRequest1);
+    MockInputStream networkIn1 = getNetworkIn(joinRequest1);
     OutputStream networkOut1 = getNetworkOut();
-    InputStream networkIn2 = getNetworkIn(joinRequest2 + System.lineSeparator() + guessRequest2);
+    MockInputStream networkIn2 =
+        getNetworkIn(joinRequest2 + System.lineSeparator() + guessRequest2);
     OutputStream networkOut2 = getNetworkOut();
     MockSocket mockSocket1 = new MockSocket(networkIn1, networkOut1);
     MockSocket mockSocket2 = new MockSocket(networkIn2, networkOut2);
+    List<MockInputStream> inputs = List.of(networkIn1, networkIn2);
     MockServerSocket serverSocket = new MockServerSocket(List.of(mockSocket1, mockSocket2));
 
-    try {
-      server.start(serverSocket);
-    } catch (NoSuchElementException e) {
-      // expected, because number of incoming clients will be exhausted quickly.
-    }
+    TestUtils.startServer(serverSocket);
+    do {
+      Thread.sleep(10);
+    } while (!TestUtils.areDone(inputs));
+    Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
 
     String sent = networkOut2.toString();
     String[] jsonMessages = sent.split(System.lineSeparator());
@@ -112,23 +60,25 @@ public class ServerAdvancedTest {
   }
 
   @Test
-  public void testServer_clientUnreachable_sendsPlayerLeft() throws IOException {
-    Server server = new Server();
+  public void testServer_clientUnreachable_sendsPlayerLeft()
+      throws IOException, InterruptedException {
     String joinRequest1 = "{\"messageType\":\"JoinGameRequest\",\"playerName\":\"" + USER1 + "\"}";
     String joinRequest2 = "{\"messageType\":\"JoinGameRequest\",\"playerName\":\"" + USER2 + "\"}";
-    InputStream networkIn1 = getNetworkIn(joinRequest1, true);
+    MockInputStream networkIn1 = getNetworkIn(joinRequest1);
     OutputStream networkOut1 = getNetworkOut();
-    InputStream networkIn2 = getNetworkIn(joinRequest2, false);
+    MockInputStream networkIn2 = getNetworkIn(joinRequest2);
     OutputStream networkOut2 = getNetworkOut();
     MockSocket mockSocket1 = new MockSocket(networkIn1, networkOut1);
     MockSocket mockSocket2 = new MockSocket(networkIn2, networkOut2);
+    List<MockInputStream> inputs = List.of(networkIn1, networkIn2);
     MockServerSocket serverSocket = new MockServerSocket(List.of(mockSocket1, mockSocket2));
 
-    try {
-      server.start(serverSocket);
-    } catch (NoSuchElementException | IOException e) {
-      // expected, because number of incoming clients will be exhausted quickly.
-    }
+    TestUtils.startServer(serverSocket);
+    do {
+      Thread.sleep(10);
+    } while (!TestUtils.areDone(inputs));
+    networkIn2.finish();
+    Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
 
     String sent = networkOut1.toString();
     String[] jsonMessages = sent.split(System.lineSeparator());
@@ -144,26 +94,27 @@ public class ServerAdvancedTest {
   }
 
   @Test
-  public void testServer_multipleClientConnections() throws IOException {
+  public void testServer_multipleClientConnections() throws IOException, InterruptedException {
     final int numUsers = 20;
-    Server server = new Server();
     List<MockSocket> sockets = new ArrayList<>(numUsers);
     List<OutputStream> networkOutputs = new ArrayList<>(numUsers);
+    List<MockInputStream> networkInputs = new ArrayList<>(numUsers);
     for (int i = 1; i <= numUsers; i++) {
       String user = "U" + i;
       String joinRequest = "{\"messageType\":\"JoinGameRequest\",\"playerName\":\"" + user + "\"}";
-      InputStream networkIn = getNetworkIn(joinRequest, true);
+      MockInputStream networkIn = getNetworkIn(joinRequest);
       OutputStream networkOut = getNetworkOut();
       networkOutputs.add(networkOut);
+      networkInputs.add(networkIn);
       sockets.add(new MockSocket(networkIn, networkOut));
     }
     MockServerSocket serverSocket = new MockServerSocket(sockets);
 
-    try {
-      server.start(serverSocket);
-    } catch (NoSuchElementException | IOException e) {
-      // expected, because number of incoming clients will be exhausted quickly.
-    }
+    TestUtils.startServer(serverSocket);
+    do {
+      Thread.sleep(10);
+    } while (!TestUtils.areDone(networkInputs));
+    Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
 
     for (int i = 1; i <= networkOutputs.size(); i++) {
       boolean found = false;

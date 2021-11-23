@@ -13,7 +13,9 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
+@Timeout(value = 5)
 public class ClientRequiredTest {
 
   private static final String USERNAME = "DummyUser";
@@ -51,7 +53,7 @@ public class ClientRequiredTest {
   }
 
   @Test
-  public void testClient1_start_sendsJoinRequest() {
+  public void testClient1_start_sendsJoinRequest() throws InterruptedException {
     Client client = new Client();
     InputStream networkIn = getNetworkIn("");
     OutputStream networkOut = getNetworkOut();
@@ -63,6 +65,8 @@ public class ClientRequiredTest {
       // expected, because networkIn will be exhausted quickly.
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String sent = networkOut.toString();
     String[] jsonMessages = sent.split(System.lineSeparator());
     String lastMessage = jsonMessages[jsonMessages.length - 1];
@@ -73,7 +77,8 @@ public class ClientRequiredTest {
   }
 
   @Test
-  public void testClient2_receiveGameStateNotification_printsState() throws IOException {
+  public void testClient2_receiveGameStateNotification_printsState()
+      throws IOException, InterruptedException {
     Client client = new Client();
     String playerJoined =
         "{\"messageType\":\"PlayerJoinedNotification\",\"newPlayerName\":\""
@@ -93,6 +98,8 @@ public class ClientRequiredTest {
       // expected, because there's no user input.
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String shellOutput = getOutput();
     assertThat(shellOutput)
         .endsWith(
@@ -109,7 +116,7 @@ public class ClientRequiredTest {
   }
 
   @Test
-  public void testClient3_guessInputH_sendsGuessRequest() {
+  public void testClient3_guessInputH_sendsGuessRequest() throws InterruptedException {
     feedInput("H");
     Client client = new Client();
     String playerJoined =
@@ -130,6 +137,8 @@ public class ClientRequiredTest {
       // expected, because networkIn will be exhausted quickly.
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String sent = networkOut.toString();
     String[] jsonMessages = sent.split(System.lineSeparator());
     String lastMessage = jsonMessages[jsonMessages.length - 1];
@@ -140,7 +149,7 @@ public class ClientRequiredTest {
   }
 
   @Test
-  public void testClient3_guessInputL_sendsGuessRequest() {
+  public void testClient3_guessInputL_sendsGuessRequest() throws InterruptedException {
     feedInput("L");
     Client client = new Client();
     String playerJoined =
@@ -160,7 +169,8 @@ public class ClientRequiredTest {
     } catch (IOException e) {
       // expected, because networkIn will be exhausted quickly.
     }
-
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String sent = networkOut.toString();
     String[] jsonMessages = sent.split(System.lineSeparator());
     String lastMessage = jsonMessages[jsonMessages.length - 1];
@@ -171,7 +181,7 @@ public class ClientRequiredTest {
   }
 
   @Test
-  public void testClient3_guessInputE_sendsGuessRequest() {
+  public void testClient3_guessInputE_sendsGuessRequest() throws InterruptedException {
     feedInput("E");
     Client client = new Client();
     String playerJoined =
@@ -192,6 +202,8 @@ public class ClientRequiredTest {
       // expected, because networkIn will be exhausted quickly.
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String sent = networkOut.toString();
     String[] jsonMessages = sent.split(System.lineSeparator());
     String lastMessage = jsonMessages[jsonMessages.length - 1];
@@ -202,7 +214,8 @@ public class ClientRequiredTest {
   }
 
   @Test
-  public void testClient4_receiveLaterGameStateNotification_printsState() throws IOException {
+  public void testClient4_receiveLaterGameStateNotification_printsState()
+      throws IOException, InterruptedException {
     Client client = new Client();
     String playerJoined =
         "{\"messageType\":\"PlayerJoinedNotification\",\"newPlayerName\":\""
@@ -222,6 +235,8 @@ public class ClientRequiredTest {
       // expected, because there's no user input.
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String shellOutput = getOutput();
     assertThat(shellOutput)
         .endsWith(
@@ -239,7 +254,7 @@ public class ClientRequiredTest {
 
   @Test
   public void testClient5_receiveNewRoundGameStateNotificationLoss_printsState()
-      throws IOException {
+      throws IOException, InterruptedException {
     feedInput("L");
     Client client = new Client();
     String playerJoined =
@@ -270,6 +285,8 @@ public class ClientRequiredTest {
       // expected, because there's no user input.
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String shellOutput = getOutput();
     assertThat(shellOutput)
         .endsWith(
@@ -294,7 +311,8 @@ public class ClientRequiredTest {
   }
 
   @Test
-  public void testClient5_receiveNewRoundGameStateNotificationWin_printsState() throws IOException {
+  public void testClient5_receiveNewRoundGameStateNotificationWin_printsState()
+      throws IOException, InterruptedException {
     feedInput("H");
     Client client = new Client();
     String playerJoined =
@@ -325,6 +343,8 @@ public class ClientRequiredTest {
       // expected, because there's no user input.
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String shellOutput = getOutput();
     assertThat(shellOutput)
         .endsWith(

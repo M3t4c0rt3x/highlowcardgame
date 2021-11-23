@@ -76,7 +76,8 @@ public class PlayerConnection implements Player, Runnable {
         }
       }
     } catch (IOException | NoNextCardException e) {
-      e.printStackTrace();
+      //e.printStackTrace();
+      game.removePlayer(this);
     } finally {
       try {
         if (pcOutput != null) {
@@ -90,6 +91,7 @@ public class PlayerConnection implements Player, Runnable {
         }
       } catch (IOException e) {
         e.printStackTrace();
+        game.removePlayer(this);
       } finally {
         game.removePlayer(this);
       }

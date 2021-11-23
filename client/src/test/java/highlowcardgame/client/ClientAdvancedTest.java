@@ -12,7 +12,9 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
+@Timeout(value = 5)
 public class ClientAdvancedTest {
 
   private static final String USERNAME = "DummyUser";
@@ -47,7 +49,7 @@ public class ClientAdvancedTest {
   }
 
   @Test
-  public void testReceivePlayerGuess_otherPlayer_prints() {
+  public void testReceivePlayerGuess_otherPlayer_prints() throws InterruptedException {
     Client client = new Client();
     String playerJoined1 =
         "{\"messageType\":\"PlayerJoinedNotification\",\"newPlayerName\":\""
@@ -77,6 +79,8 @@ public class ClientAdvancedTest {
       // expected, because there's no more network messages
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String shellOutput = getOutput();
     assertThat(shellOutput)
         .endsWith(
@@ -91,7 +95,7 @@ public class ClientAdvancedTest {
   }
 
   @Test
-  public void testReceivePlayerGuess_own_prints() {
+  public void testReceivePlayerGuess_own_prints() throws InterruptedException {
     Client client = new Client();
     String playerJoined1 =
         "{\"messageType\":\"PlayerJoinedNotification\",\"newPlayerName\":\""
@@ -121,6 +125,8 @@ public class ClientAdvancedTest {
       // expected, because there's no more network messages
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String shellOutput = getOutput();
     assertThat(shellOutput)
         .endsWith(
@@ -135,7 +141,7 @@ public class ClientAdvancedTest {
   }
 
   @Test
-  public void testReceivePlayerLeft_prints() {
+  public void testReceivePlayerLeft_prints() throws InterruptedException {
     Client client = new Client();
     String playerJoined1 =
         "{\"messageType\":\"PlayerJoinedNotification\",\"newPlayerName\":\""
@@ -165,6 +171,8 @@ public class ClientAdvancedTest {
       // expected, because there's no more network messages
     }
 
+    // wait in case some thread is still working
+    Thread.sleep(500);
     String shellOutput = getOutput();
     assertThat(shellOutput)
         .endsWith(
