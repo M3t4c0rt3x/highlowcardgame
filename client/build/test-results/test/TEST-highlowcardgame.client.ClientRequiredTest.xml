@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="highlowcardgame.client.ClientRequiredTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2021-11-24T10:57:57" hostname="Air-2020" time="4.569">
+  <properties/>
+  <testcase name="testClient3_guessInputL_sendsGuessRequest()" classname="highlowcardgame.client.ClientRequiredTest" time="0.745"/>
+  <testcase name="testClient5_receiveNewRoundGameStateNotificationWin_printsState()" classname="highlowcardgame.client.ClientRequiredTest" time="0.643"/>
+  <testcase name="testClient4_receiveLaterGameStateNotification_printsState()" classname="highlowcardgame.client.ClientRequiredTest" time="0.557"/>
+  <testcase name="testClient3_guessInputE_sendsGuessRequest()" classname="highlowcardgame.client.ClientRequiredTest" time="0.516"/>
+  <testcase name="testClient2_receiveGameStateNotification_printsState()" classname="highlowcardgame.client.ClientRequiredTest" time="0.516"/>
+  <testcase name="testClient5_receiveNewRoundGameStateNotificationLoss_printsState()" classname="highlowcardgame.client.ClientRequiredTest" time="0.542"/>
+  <testcase name="testClient1_start_sendsJoinRequest()" classname="highlowcardgame.client.ClientRequiredTest" time="0.514"/>
+  <testcase name="testClient3_guessInputH_sendsGuessRequest()" classname="highlowcardgame.client.ClientRequiredTest" time="0.516"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
