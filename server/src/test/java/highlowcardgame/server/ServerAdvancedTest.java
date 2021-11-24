@@ -5,8 +5,10 @@ import static highlowcardgame.server.TestUtils.getNetworkIn;
 import static highlowcardgame.server.TestUtils.getNetworkOut;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -34,7 +36,7 @@ public class ServerAdvancedTest {
     OutputStream networkOut1 = getNetworkOut();
     MockInputStream networkIn2 =
         getNetworkIn(joinRequest2 + System.lineSeparator() + guessRequest2);
-    OutputStream networkOut2 = getNetworkOut();
+    ByteArrayOutputStream networkOut2 = getNetworkOut();
     MockSocket mockSocket1 = new MockSocket(networkIn1, networkOut1);
     MockSocket mockSocket2 = new MockSocket(networkIn2, networkOut2);
     List<MockInputStream> inputs = List.of(networkIn1, networkIn2);
@@ -46,7 +48,7 @@ public class ServerAdvancedTest {
     } while (!TestUtils.areDone(inputs));
     Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
 
-    String sent = networkOut2.toString();
+    String sent = networkOut2.toString(StandardCharsets.UTF_8);
     String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"PlayerGuessedNotification\".*")
@@ -65,7 +67,7 @@ public class ServerAdvancedTest {
     String joinRequest1 = "{\"messageType\":\"JoinGameRequest\",\"playerName\":\"" + USER1 + "\"}";
     String joinRequest2 = "{\"messageType\":\"JoinGameRequest\",\"playerName\":\"" + USER2 + "\"}";
     MockInputStream networkIn1 = getNetworkIn(joinRequest1);
-    OutputStream networkOut1 = getNetworkOut();
+    ByteArrayOutputStream networkOut1 = getNetworkOut();
     MockInputStream networkIn2 = getNetworkIn(joinRequest2);
     OutputStream networkOut2 = getNetworkOut();
     MockSocket mockSocket1 = new MockSocket(networkIn1, networkOut1);
@@ -77,6 +79,8 @@ public class ServerAdvancedTest {
     do {
       Thread.sleep(10);
     } while (!TestUtils.areDone(inputs));
+    // give server enough time to actually try to read from networkIn2 after registering player
+    Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
     networkIn2.finish();
     Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
 
@@ -97,13 +101,13 @@ public class ServerAdvancedTest {
   public void testServer_multipleClientConnections() throws IOException, InterruptedException {
     final int numUsers = 20;
     List<MockSocket> sockets = new ArrayList<>(numUsers);
-    List<OutputStream> networkOutputs = new ArrayList<>(numUsers);
+    List<ByteArrayOutputStream> networkOutputs = new ArrayList<>(numUsers);
     List<MockInputStream> networkInputs = new ArrayList<>(numUsers);
     for (int i = 1; i <= numUsers; i++) {
       String user = "U" + i;
       String joinRequest = "{\"messageType\":\"JoinGameRequest\",\"playerName\":\"" + user + "\"}";
       MockInputStream networkIn = getNetworkIn(joinRequest);
-      OutputStream networkOut = getNetworkOut();
+      ByteArrayOutputStream networkOut = getNetworkOut();
       networkOutputs.add(networkOut);
       networkInputs.add(networkIn);
       sockets.add(new MockSocket(networkIn, networkOut));
@@ -118,7 +122,7 @@ public class ServerAdvancedTest {
 
     for (int i = 1; i <= networkOutputs.size(); i++) {
       boolean found = false;
-      String sent = networkOutputs.get(i - 1).toString();
+      String sent = networkOutputs.get(i - 1).toString(StandardCharsets.UTF_8);
       String[] jsonMessages = sent.split(System.lineSeparator());
       for (String message : jsonMessages) {
         if (message.matches(".*\"messageType\"\\s*:\\s*\"PlayerJoinedNotification\".*")

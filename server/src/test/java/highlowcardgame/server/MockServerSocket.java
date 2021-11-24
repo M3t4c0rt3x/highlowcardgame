@@ -20,7 +20,7 @@ public class MockServerSocket extends ServerSocket {
   public Socket accept() {
     if (sockets.hasNext()) {
       try {
-        Thread.sleep(100);
+        Thread.sleep(Sleeps.SLEEP_BETWEEN_SOCKET_ACCEPTS);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }

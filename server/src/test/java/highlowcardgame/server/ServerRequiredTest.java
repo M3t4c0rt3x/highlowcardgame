@@ -4,8 +4,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static highlowcardgame.server.TestUtils.getNetworkIn;
 import static highlowcardgame.server.TestUtils.getNetworkOut;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ public class ServerRequiredTest {
       throws IOException, InterruptedException {
     MockInputStream networkIn =
         getNetworkIn("{\"messageType\":\"JoinGameRequest\",\"playerName\":\"" + USER1 + "\"}");
-    OutputStream networkOut = getNetworkOut();
+    ByteArrayOutputStream networkOut = getNetworkOut();
     MockSocket mockSocket = new MockSocket(networkIn, networkOut);
     MockServerSocket serverSocket = new MockServerSocket(List.of(mockSocket));
 
@@ -35,7 +36,7 @@ public class ServerRequiredTest {
     } while (!networkIn.isDone());
     Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
 
-    String sent = networkOut.toString();
+    String sent = networkOut.toString(StandardCharsets.UTF_8);
     String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"PlayerJoinedNotification\".*")
@@ -55,7 +56,7 @@ public class ServerRequiredTest {
     String guessRequest =
         "{\"messageType\":\"GuessRequest\",\"guess\":\"HIGH\",\"playerName\":\"" + USER1 + "\"}";
     MockInputStream networkIn = getNetworkIn(joinRequest + System.lineSeparator() + guessRequest);
-    OutputStream networkOut = getNetworkOut();
+    ByteArrayOutputStream networkOut = getNetworkOut();
     MockSocket mockSocket = new MockSocket(networkIn, networkOut);
     MockServerSocket serverSocket = new MockServerSocket(List.of(mockSocket));
 
@@ -65,7 +66,7 @@ public class ServerRequiredTest {
     } while (!networkIn.isDone());
     Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
 
-    String sent = networkOut.toString();
+    String sent = networkOut.toString(StandardCharsets.UTF_8);
     String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"GameStateNotification\".*")
@@ -77,7 +78,7 @@ public class ServerRequiredTest {
         assertThat(message).matches(".*\"suit\"\\s*:\\s*\"(CLUBS|DIAMONDS|HEARTS|SPADES)\".*");
         assertThat(message).matches(".*\"value\"\\s*:\\s*([0-9]|1[0-3]).*");
         assertThat(message).matches(".*\"numRounds\"\\s*:\\s*2.*");
-        assertThat(message).matches(".*\"score\"\\s*:\\s*[01].*");
+        assertThat(message).matches(".*\"score\"\\s*:\\s*(0|1|25).*");
         assertThatContainsNKeyValuePairs(message, 7);
         return;
       }
@@ -92,7 +93,7 @@ public class ServerRequiredTest {
     String guessRequest =
         "{\"messageType\":\"GuessRequest\",\"guess\":\"LOW\",\"playerName\":\"" + USER1 + "\"}";
     MockInputStream networkIn = getNetworkIn(joinRequest + System.lineSeparator() + guessRequest);
-    OutputStream networkOut = getNetworkOut();
+    ByteArrayOutputStream networkOut = getNetworkOut();
     MockSocket mockSocket = new MockSocket(networkIn, networkOut);
     MockServerSocket serverSocket = new MockServerSocket(List.of(mockSocket));
 
@@ -102,7 +103,7 @@ public class ServerRequiredTest {
     } while (!networkIn.isDone());
     Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
 
-    String sent = networkOut.toString();
+    String sent = networkOut.toString(StandardCharsets.UTF_8);
     String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"GameStateNotification\".*")
@@ -130,7 +131,7 @@ public class ServerRequiredTest {
     String guessRequest =
         "{\"messageType\":\"GuessRequest\",\"guess\":\"EQUAL\",\"playerName\":\"" + USER1 + "\"}";
     MockInputStream networkIn = getNetworkIn(joinRequest + System.lineSeparator() + guessRequest);
-    OutputStream networkOut = getNetworkOut();
+    ByteArrayOutputStream networkOut = getNetworkOut();
     MockSocket mockSocket = new MockSocket(networkIn, networkOut);
     MockServerSocket serverSocket = new MockServerSocket(List.of(mockSocket));
 
@@ -140,7 +141,7 @@ public class ServerRequiredTest {
     } while (!networkIn.isDone());
     Thread.sleep(Sleeps.SLEEP_BEFORE_TESTING);
 
-    String sent = networkOut.toString();
+    String sent = networkOut.toString(StandardCharsets.UTF_8);
     String[] jsonMessages = sent.split(System.lineSeparator());
     for (String message : jsonMessages) {
       if (message.matches(".*\"messageType\"\\s*:\\s*\"GameStateNotification\".*")

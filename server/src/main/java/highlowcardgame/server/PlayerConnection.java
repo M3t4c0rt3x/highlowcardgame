@@ -76,7 +76,7 @@ public class PlayerConnection implements Player, Runnable {
         }
       }
     } catch (IOException | NoNextCardException e) {
-      //e.printStackTrace();
+      // e.printStackTrace();
       game.removePlayer(this);
     } finally {
       try {

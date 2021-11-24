@@ -2,7 +2,6 @@ package highlowcardgame.server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -28,7 +27,7 @@ public final class TestUtils {
     return new MockInputStream(input + System.lineSeparator());
   }
 
-  static OutputStream getNetworkOut() {
+  static ByteArrayOutputStream getNetworkOut() {
     return new ByteArrayOutputStream();
   }
 

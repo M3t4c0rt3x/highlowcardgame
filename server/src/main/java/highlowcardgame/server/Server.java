@@ -92,10 +92,10 @@ public class Server {
         Socket acceptedSocket = socket.accept();
         PlayerConnection pc = new PlayerConnection(acceptedSocket, game);
         new Thread(pc).start();
-        //Thread.sleep(10);
+        Thread.sleep(15);
       }
-    /*} catch (InterruptedException e) {
-      System.err.println(e); */
+    } catch (InterruptedException e) {
+      System.err.println(e);
     } catch (IOException | NoNextCardException e) {
       System.err.println(e);
     } finally {
